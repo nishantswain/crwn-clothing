@@ -1,0 +1,17 @@
+.App {
+  /* text-align: center; */
+  font-family: 'Open Sans Condensed';
+  font-weight: 900;
+  padding: 20px 55px;
+
+}
+
+a{
+  text-decoration: none;
+  color: black;
+}
+
+*{
+  box-sizing: border-box;
+}
+
