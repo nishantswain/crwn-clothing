@@ -1,13 +1,14 @@
 import React from 'react';
-import './directory-menu.style.scss';
+import {DirectoryMenuConatiner} from './directory-menu.styles'
 import MenuItem from '../menu-item/menu-item.component';
 import {connect} from 'react-redux';
 import {selectDirectorySections} from '../../redux/directory/directory.selectors'
 import {createStructuredSelector} from 'reselect'
 
+
 const DirectoryMenu=({sections}) =>
    
-        (<div className='directory-menu'>
+        (<DirectoryMenuConatiner className='directory-menu'>
 
             {
             sections.map(({id,...otherSectionProps})=>(
@@ -15,7 +16,7 @@ const DirectoryMenu=({sections}) =>
                 ))
             }
 
-        </div>)
+        </DirectoryMenuConatiner>)
     
 
 

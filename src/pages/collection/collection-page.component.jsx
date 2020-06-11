@@ -1,29 +1,31 @@
 import React from 'react';
-import './collection-page.style.scss'
+import {CollectionContainer,CollectionTitle,CollectionItemsContainer} from './collection-page.styles'
 import {connect} from 'react-redux'
 import {selectCollectionByParam} from '../../redux/shop/shop.selectors'
 import CollectionItem from '../../components/collection-item/collection-item.component'
 
 
+// the conatiners are jsx styled components.
 
-
-const CollectionPage = ({ collection }) => {
+const CollectionPage = ({ collection,match }) => {
     const { title, items } = collection;
+    console.log(match)
     return (
-      <div className='collection-page'>
-        <h2 className='title'>{title}</h2>
-        <div className='items'>
+      <CollectionContainer className='collection-page'> 
+        <CollectionTitle className='title'>{title}</CollectionTitle>
+        <CollectionItemsContainer className='items'>
           {items.map(item => (
             <CollectionItem key={item.id} item={item} />
           ))}
-        </div>
-      </div>
+        </CollectionItemsContainer>
+      </CollectionContainer>
     );
   };
 
 const mapStateToProps = (state,ownProps)=>(
 {
-    collection:selectCollectionByParam(ownProps.match.params.collectionId)(state)
+    collection:selectCollectionByParam(ownProps.match.params.collectionId)(state) // here we are passing a parameter to the 
+                                                                                  //selector so that it selects the req collection  accordingly.
 })
 
 export default connect(mapStateToProps,null)(CollectionPage);

@@ -7,12 +7,13 @@ import CheckOutPage from './pages/checkoutpage/checkoutpage'
 
 import {Switch,Route,Link,Redirect} from 'react-router-dom';
 import {connect} from 'react-redux';
-import {auth, createUserProfileDocument} from './firebase/firebase.utils';
+import {auth, createUserProfileDocument,addCollectionAndDocuments} from './firebase/firebase.utils';
 import {setCurrentUserAction} from './redux/user/user.actions'
 import {createStructuredSelector} from 'reselect'
 import { selectCurrentUser } from './redux/user/user.selectors';
 
 import Header from './components/header/header.component'
+import { selectCollectionForPreview } from './redux/shop/shop.selectors';
 
 
 // const Hatspage=(props)=>{
@@ -31,17 +32,20 @@ class App extends React.Component{
   
   componentDidMount(){
 
-    const {setCurrentUser} = this.props;
+    const {setCurrentUser,collectionArray} = this.props;
                           
-    this.unsubscribeFromAuth=auth.onAuthStateChanged(async userAuth=>{
+    this.unsubscribeFromAuth=auth.onAuthStateChanged(async userAuth=>{ // if auth state changes in firebase, 
+                                                                        //return the auth object, this is an asynchronous function
 
-                               if(userAuth){
+                               if(userAuth){ // if auth object exists,
 
-                                  const userRef= await createUserProfileDocument(userAuth);
+                                  const userRef= await createUserProfileDocument(userAuth); // pass into this function to store the details in fbase,
+                                                                                            // if snapshot doesnot exist.
 
-                                  userRef.onSnapshot(snapShot=>{
-
-                                   setCurrentUser({
+                                  userRef.onSnapshot(snapShot=>{ // this method gives us A SNAPSHOT, using which we have the set currentUser in store
+                                                                // for this we use setCurrentUser action, 
+ 
+                                   setCurrentUser({ //we give the action the user data by using SNAPSHOT object. 
 
                                       id:snapShot.id,
                                       ...snapShot.data()
@@ -49,9 +53,12 @@ class App extends React.Component{
 
                                   });
                                }
-                               else
-                              setCurrentUser(null);
-                          })
+                               
+                              setCurrentUser(userAuth);// if auth state hasnot changed set the currentUser as null in store, Store->user->currentUser
+
+                              // addCollectionAndDocuments('collection',collectionArray.map(({title,items})=>({title,items}))) //here we destructure the the objects and select the properties we want 
+                                                                                                                            //and return a new array, we know that array.map() return us a new array.
+                            });
                     }
 
 
@@ -89,7 +96,8 @@ class App extends React.Component{
 }
 
 const mapStatetoProps = createStructuredSelector({
-  currentUserProp:selectCurrentUser
+  currentUserProp:selectCurrentUser,
+  collectionArray:selectCollectionForPreview  //this selector being used to store data in firebase
 
 })
 

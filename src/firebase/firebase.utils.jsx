@@ -2,6 +2,7 @@ import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/auth';
 import { useRef } from 'react';
+import { batch } from 'react-redux';
 
 const config={
     apiKey: "AIzaSyBQiKDlOVVYvrqAjzC47zwaYoZln1NBv-A",
@@ -16,22 +17,24 @@ const config={
 
   export const createUserProfileDocument =async (userAuth, additionalData)=>{
 
-    if(!userAuth) return;
+    if(!userAuth) return; // if userAuth object is null, retrun..
 
-    const userRefQuery= firestore.doc(`users/${userAuth.uid}`);
+    const userRefQuery= firestore.doc(`users/${userAuth.uid}`);  // create reference Query for user, by passing user id..
 
-    const snapShot = await userRefQuery.get();
+    const snapShot = await userRefQuery.get(); // using that referrence query get the snapshot query
 
-    if(!snapShot.exists){
+    if(!snapShot.exists){ // if the snapshot exists, enter the if loop
 
-      const {displayName,email}=userAuth;
-      const createdAt=new Date();
+      const {displayName,email}=userAuth; // get the properties which you want to store in firestore's user collection
+      const createdAt=new Date(); // the current date,
       try{
-        userRefQuery.set({displayName,
+        userRefQuery.set({displayName,   
                         email,
                         createdAt,
                         ...additionalData
-                      });
+                      }); // using the reference query store the document in user collection, by passing the the requied properties to 
+                          //set function of reference query.. refQuery.set({displayName,email,createdAt,..additionalData}) , cause the name and 
+                          //value have the same name.
       }
       catch(error){
         console.log('error creating User',error.message);
@@ -40,12 +43,44 @@ const config={
 
     }
 
-    return userRefQuery;
+    return userRefQuery; // after creation , return the user reference query.
   }
 
 
+  export const addCollectionAndDocuments = async (collectionKey,objectsToAdd)=>{ //here objects are documents and set of documents is collection.
 
+    const batch=firestore.batch();
+    const collectionRef=firestore.collection(collectionKey)
+    objectsToAdd.forEach(obj=>{
 
+      const newDocRef= collectionRef.doc() // this gives us a document id for every object in
+                                          // objectsToAdd array.
+      batch.set(newDocRef, obj);
+    });
+
+    return await batch.commit()
+    
+  }
+
+export const covertCollectionsSnapshotToMap = (Collections)=>{
+
+  const transformedCollection =Collections.docs.map(doc=>{//the docs of collection collection in firestore are stored in the form of array
+    const {title,items} =doc.data();
+
+    return{
+      routeName:encodeURI(title.toLowerCase()), // sometimes the url cannot handles special charcters, this functions helps in that kind of case.
+      id:doc.id, 
+      title,
+      items 
+    }
+  });
+
+    return transformedCollection.reduce((accumulator,collection)=>{
+      accumulator[collection.title.toLowerCase()]=collection;
+      return accumulator;
+    },{})
+  console.log(transformedCollection)
+}
 
   firebase.initializeApp(config);
 

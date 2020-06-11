@@ -16,12 +16,14 @@ const selectCollections = createSelector(
 )
 const selectCollectionForPreview = createSelector(
     [selectCollections],
-    collections=>Object.keys(collections).map(key=>collections[key])
+    collections=>collections?Object.keys(collections).map(key=>collections[key]):[] //here we map over the array of collections keys, this returns us a new
+                                                                     // array , where every element of the array is the value in collection at the  
+                                                                     // key we have mentioned.
 )
 const selectCollectionByParam = urlParam =>createSelector(
     [selectCollections],
     collections=>
-    collections[urlParam]
+    (collections?collections[urlParam]:null)
 
 )
 

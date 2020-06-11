@@ -1,5 +1,5 @@
 import React from 'react'
-import './sign-up.style.scss'
+import {SignUpContainer,TitleContainer} from './sign-up.styles'
 import FormInput from '../form-input/form-input.component'
 import CustomButton from '../custom-button/custom-button.component'
 import {auth,createUserProfile, createUserProfileDocument} from '../../firebase/firebase.utils'
@@ -59,55 +59,48 @@ class SignUp extends React.Component{
     render()
     {
         return(
-            <div className='sign-up'>
+            <SignUpContainer>
             
-                <h2 className='title'>I do not have an Account</h2>
+                <TitleContainer className='title'>I do not have an Account</TitleContainer>
                 <span className='subtitle'>Sign up with email and password</span>
-                <form className='sign-up-form' onSubmit={this.submitHandler} >
                 
-                <FormInput
-                type='text'
-                name='displayName'
-                value={this.state.displayName}
-                handleChange={this.handleChange}
-                label='name'
-                required
+                <form  onSubmit={this.submitHandler} >
                 
-                />
-                 <FormInput
-                type='email'
-                name='email'
-                value={this.state.email}
-                handleChange={this.handleChange}
-                label='email'
-                required
-                
-                />
+                        <FormInput
+                            type='text'
+                            name='displayName'
+                            value={this.state.displayName}
+                            handleChange={this.handleChange}
+                            label='name'
+                            required  />
+                 
+                        <FormInput
+                            type='email'
+                            name='email'
+                            value={this.state.email}
+                            handleChange={this.handleChange}
+                            label='email'
+                            required />
 
-                <FormInput
-                type='password'
-                name='password'
-                value={this.state.password}
-                handleChange={this.handleChange}
-                label='Password'
-                required
-                
-                />
+                        <FormInput
+                            type='password'
+                            name='password'
+                            value={this.state.password}
+                            handleChange={this.handleChange}
+                            label='Password'
+                            required />
 
-                <FormInput
-                type='password'
-                name='confirmPassword'
-                value={this.state.confirmPassword}
-                handleChange={this.handleChange}
-                label='Confirm Password'
-                required
-                
-                />
-            <CustomButton
-                type='submit'
-            >SIGN UP</CustomButton>
-            </form>
-            </div>
+                        <FormInput
+                            type='password'
+                            name='confirmPassword'
+                            value={this.state.confirmPassword}
+                            handleChange={this.handleChange}
+                            label='Confirm Password'
+                            required />
+                      <CustomButton type='submit'>SIGN UP</CustomButton>
+                </form>
+            
+            </SignUpContainer>
         )
     }
 }
